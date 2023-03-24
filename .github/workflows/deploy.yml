@@ -13,9 +13,10 @@ env:
 jobs:
   test:
     env:
+    # the secrets is added to github under the repository setting or under the accout setting if its an org account
       MONGODB_CLUSTER_ADDRESS: cluster0.qkzhl.mongodb.net
-      MONGODB_USERNAME: admin-micheal
-      MONGODB_PASSWORD: Megasx1r
+      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+      MONGODB_PASSWORD:  ${{ secrets.MONGODB_PASSWORD }}
       PORT: 8080
     environment: testing
     runs-on: ubuntu-latest
