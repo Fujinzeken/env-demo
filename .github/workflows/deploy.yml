@@ -1,0 +1,45 @@
+name: Deployment
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+# to add env vars
+# you can define env vars on workflow lvl as seen below or jobs, and even step lvl.
+env:
+  MONGODB_DB_NAME: env-demo # seting env variable here makes it available to all jobs in this workflow unless a job sets its own env to override this.
+
+jobs:
+  test:
+    env:
+      MONGODB_CLUSTER_ADDRESS: cluster0.qkzhl.mongodb.net
+      MONGODB_USERNAME: micheal
+      MONGODB_PASSWORD: Megasx1r
+      PORT: 8080
+    # environment: testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-deps-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Run server
+        run: npm start & npx wait-on http://127.0.0.1:$PORT # get env var by prefixing a $ behind it
+      - name: Run tests
+        run: npm test
+      - name: Output information
+        run: echo "MongoDb username is: ${{ env.MONGODB_USERNAME }}" # this is an alternative to using just the $
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output information
+        run: |        
+          echo "MongoDb username: $MONGODB_USERNAME"
+          echo "MongoDB name: ${{ env.MONGODB_DB_NAME }}"
