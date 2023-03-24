@@ -34,7 +34,7 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Output information
-        run: echo "MongoDb username is: ${{ env.MONGODB_USERNAME }}" # this is an alternative to using just the $
+        run: echo "MongoDb username:${{ env.MONGODB_USERNAME }}" # this is an alternative to using just the $
   deploy:
     needs: test
     runs-on: ubuntu-latest
